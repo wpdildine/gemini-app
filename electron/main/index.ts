@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, systemPreferences } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
 import { update } from './update'
@@ -29,18 +29,17 @@ if (!app.requestSingleInstanceLock()) {
   app.quit()
   process.exit(0)
 }
-
 // Remove electron security warnings
 // This warning only shows in development mode
 // Read more on https://www.electronjs.org/docs/latest/tutorial/security
 // process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
-
 let win: BrowserWindow | null = null
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 
+systemPreferences.getMediaAccessStatus('camera')
 async function createWindow() {
   win = new BrowserWindow({
     title: 'Main window',
